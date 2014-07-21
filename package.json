@@ -1,0 +1,22 @@
+{
+  "description": "Generic red-black tree library (by Julienne Walker).",
+
+  "keywords": [
+    "binary",
+    "black",
+    "red",
+    "search",
+    "tree"
+  ],
+
+  "license": "MIT",
+  "name": "red-black-tree",
+  "repo": "clibs/red-black-tree",
+
+  "src": [
+    "src/jsw_rbtree.c",
+    "src/jsw_rbtree.h"
+  ],
+
+  "version": "1.0.0"
+}
