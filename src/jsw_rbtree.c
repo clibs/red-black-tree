@@ -364,7 +364,7 @@ int jsw_rberase ( jsw_rbtree_t *tree, void *data )
       if ( !is_red ( q ) && !is_red ( q->link[dir] ) ) {
         if ( is_red ( q->link[!dir] ) )
           p = p->link[last] = jsw_single ( q, dir );
-        else if ( !is_red ( q->link[!dir] ) ) {
+        else /* if ( !is_red ( q->link[!dir] ) ) an unnecessary double check */ {
           jsw_rbnode_t *s = p->link[!last];
 
           if ( s != NULL ) {
