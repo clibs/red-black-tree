@@ -236,12 +236,14 @@ void *jsw_rbfind ( jsw_rbtree_t *tree, void *data )
 */
 int jsw_rbinsert ( jsw_rbtree_t *tree, void *data )
 {
+  int added = 0; // keeps track of if we added a node or not
   if ( tree->root == NULL ) {
     /*
       We have an empty tree; attach the
       new node directly to the root
     */
     tree->root = new_node ( tree, data );
+    added = 1; // remember we added a node
 
     if ( tree->root == NULL )
       return 0;
@@ -262,6 +264,7 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void *data )
       if ( q == NULL ) {
         /* Insert a new node at the first null link */
         p->link[dir] = q = new_node ( tree, data );
+        added = 1; // remember we added a node
 
         if ( q == NULL )
           return 0;
@@ -307,9 +310,10 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void *data )
 
   /* Make the root black for simplified logic */
   tree->root->red = 0;
-  ++tree->size;
+  if(added) // did we add a node?
+    ++tree->size; // then count up
 
-  return 1;
+  return added; // return if we added a node or not
 }
 
 /**
@@ -330,6 +334,7 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void *data )
 */
 int jsw_rberase ( jsw_rbtree_t *tree, void *data )
 {
+  int erased = 0; // keeps track of if we erased a node or not
   if ( tree->root != NULL ) {
     jsw_rbnode_t head = {0}; /* False tree root */
     jsw_rbnode_t *q, *p, *g; /* Helpers */
@@ -399,19 +404,20 @@ int jsw_rberase ( jsw_rbtree_t *tree, void *data )
       p->link[p->link[1] == q] =
         q->link[q->link[0] == NULL];
       free ( q );
+    //MOVE!}
+
+      /* Update the root (it may be different) */
+      tree->root = head.link[1];
+
+      /* Make the root black for simplified logic */
+      if ( tree->root != NULL )
+        tree->root->red = 0;
+
+      --tree->size;
+      erased = 1; // remember that we erased a node
     }
-
-    /* Update the root (it may be different) */
-    tree->root = head.link[1];
-
-    /* Make the root black for simplified logic */
-    if ( tree->root != NULL )
-      tree->root->red = 0;
-
-    --tree->size;
   }
-
-  return 1;
+  return erased;
 }
 
 /**
