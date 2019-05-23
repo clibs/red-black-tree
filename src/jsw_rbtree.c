@@ -334,6 +334,7 @@ int jsw_rbinsert ( jsw_rbtree_t *tree, void *data )
 */
 int jsw_rberase ( jsw_rbtree_t *tree, void *data )
 {
+  int erased = 0; // keeps track of if we erased a node or not
   if ( tree->root != NULL ) {
     jsw_rbnode_t head = {0}; /* False tree root */
     jsw_rbnode_t *q, *p, *g; /* Helpers */
@@ -403,20 +404,20 @@ int jsw_rberase ( jsw_rbtree_t *tree, void *data )
       p->link[p->link[1] == q] =
         q->link[q->link[0] == NULL];
       free ( q );
-    //Moved}
+    //MOVE!}
 
-    /* Update the root (it may be different) */
-    tree->root = head.link[1];
+      /* Update the root (it may be different) */
+      tree->root = head.link[1];
 
-    /* Make the root black for simplified logic */
-    if ( tree->root != NULL )
-      tree->root->red = 0;
+      /* Make the root black for simplified logic */
+      if ( tree->root != NULL )
+        tree->root->red = 0;
 
-    --tree->size; // only count down if we erased a node
+      --tree->size;
+      erased = 1; // remember that we erased a node
     }
   }
-
-  return 1;
+  return erased;
 }
 
 /**
